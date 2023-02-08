@@ -1,4 +1,4 @@
-# Module Image TEST
+# Module Image
 
 
 # TEST
