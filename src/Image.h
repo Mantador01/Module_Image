@@ -2,16 +2,16 @@
 #define IMAGE_H
 
 #include "Pixel.h"
-
+#include <string>
 class Image
 {
     public:
         // Constructeur par défaut de la classe: initialise dimx et dimy à 0
         // ce constructeur n'alloue pas de pixel
         Image();
-        
+
         ~Image();
-        
+
         // Constructeur de la classe: initialise dimx et dimy (après vérification)
         // puis alloue le tableau de pixel dans le tas (image noire)
         Image (int dimensionX, int dimensionY);
@@ -22,7 +22,7 @@ class Image
 
         // Dessine un rectangle plein de la couleur dans l'image (en utilisant setPix, indices en paramètre compris)
         void dessinerRectangle (int Xmin,int Ymin,int Xmax,int Ymax, Pixel couleur);
-        
+
         // Mutateur : modifie le pixel de coordonnées (x,y)
 	    void setPix(int x, int y, const Pixel& couleur);
 
@@ -36,10 +36,10 @@ class Image
         //
         void sauver(const string & filename) const;
 
-        //
-        void ouvrir(const string & filename);
+        */
+        void ouvrir(const std::string & filename);
 
-        //
+        /*/
         void afficherConsole();
 
         //

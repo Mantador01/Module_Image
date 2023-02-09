@@ -2,6 +2,8 @@
 #include "Pixel.h"
 
 #include <string>
+#include <fstream>
+
 #include <iostream>
 #include <cassert>
 
@@ -77,7 +79,7 @@ void Image::effacer(Pixel couleur)
 
 void Image::testRegression ()
 {
-    Pixel pix;
+	Pixel pix;
 
     assert(pix.getRouge()==0);
     assert(pix.getVert()==0);
@@ -96,32 +98,6 @@ void Image::testRegression ()
     assert(pixm.getRouge()==44);
     assert(pixm.getVert()==55);
     assert(pixm.getBleu()==66);
-
-    Image Image1(10,10);
-    Image Image2(100,100);
-    Image Image3(30,20);
-    Pixel pixcouleur(100,100,100);
-    Pixel pixcouleur_2(3,3,3);
-
-    assert(Image1.getPix(2,2).getBleu()==0);
-    assert(Image1.getPix(2,2).getVert()==0);
-    assert(Image1.getPix(2,2).getRouge()==0);
-
-
-    assert(Image2.getPix(2,2).getBleu()==0);
-    assert(Image3.getPix(2,2).getBleu()==0);
-
-    Image1.effacer(pixcouleur);
-    Image2.effacer(pixcouleur);
-    Image3.effacer(pixcouleur);
-    assert(Image1.getPix(2,2).getBleu()==100);
-    assert(Image2.getPix(2,2).getBleu()==100);
-    assert(Image3.getPix(2,2).getBleu()==100);
-
-
-    Image2.dessinerRectangle(1, 1, 10, 10, pixcouleur_2);
-    assert(Image2.getPix(3,3).getBleu()==3);
-
 
     //assert(Image2.getPix(0,0).getBleu()==100);
 
@@ -145,12 +121,58 @@ void Image::testRegression ()
             assert( im2.getPix(i,j).getVert()==0 );
         }
 
+
+    Pixel pixcouleur(100,100,100);
+
+	im2.dessinerRectangle(0, 0, 30, 30, pixcouleur);
+
+	for(i=0; i<=30; i++)
+        	for(j=0; j<=30; j++)
+       		{
+		    assert( im2.getPix(i,j).getRouge()==pixcouleur.getRouge());    // car rectangle dessine dans image 0,0,30,30
+		    assert( im2.getPix(i,j).getBleu()==pixcouleur.getBleu());
+		    assert( im2.getPix(i,j).getVert()==pixcouleur.getVert());
+		}
+
+
     //faire assert de effacer
 
-}
 
+   Pixel pixcouleur2(3,3,3);
+   im2.effacer(pixcouleur2);
+
+   	for(i=0; i<im2.dimx; i++)
+		for(j=0; j<im2.dimy; j++)
+		{
+			    assert( im2.getPix(i,j).getRouge()==pixcouleur2.getRouge());// car une image en sortie du constructeur doit être toute noire
+			    assert( im2.getPix(i,j).getBleu()==pixcouleur2.getBleu());
+			    assert( im2.getPix(i,j).getVert()==pixcouleur2.getVert());
+			}
+
+    Image Image1(10,10);
+    Image Image2(100,100);
+    Image Image3(30,20);
+
+    assert(Image1.getPix(2,2).getBleu()==0);
+    assert(Image1.getPix(2,2).getVert()==0);
+    assert(Image1.getPix(2,2).getRouge()==0);
+
+
+    assert(Image2.getPix(2,2).getBleu()==0);
+    assert(Image3.getPix(2,2).getBleu()==0);
+        Image2.dessinerRectangle(1, 1, 10, 10, pixcouleur2);
+    assert(Image2.getPix(3,3).getBleu()==3);
+
+    Image1.effacer(pixcouleur);
+    Image2.effacer(pixcouleur);
+    Image3.effacer(pixcouleur);
+    assert(Image1.getPix(2,2).getBleu()==100);
+    assert(Image2.getPix(2,2).getBleu()==100);
+    assert(Image3.getPix(2,2).getBleu()==100);
+
+
+}
 /*
-//
 void Image::sauver(const string & filename) const {
     ofstream fichier (filename.c_str());
     assert(fichier.is_open());
@@ -165,9 +187,9 @@ void Image::sauver(const string & filename) const {
     cout << "Sauvegarde de l'image " << filename << " ... OK\n";
     fichier.close();
 }
-
+*/
 //
-void Image::ouvrir(const string & filename) {
+void Image::ouvrir(const std::string & filename) {
     ifstream fichier (filename.c_str());
     assert(fichier.is_open());
 	char r,g,b;
@@ -177,8 +199,8 @@ void Image::ouvrir(const string & filename) {
 	assert(dimx > 0 && dimy > 0);
 	if (tab != NULL) delete [] tab;
 	tab = new Pixel [dimx*dimy];
-    for(unsigned int y=0; y<dimy; ++y)
-        for(unsigned int x=0; x<dimx; ++x) {
+    for(unsigned int y=0; y<(unsigned int)dimy; y++)
+        for(unsigned int x=0; x<(unsigned int)dimx; x++) {
             fichier >> r >> b >> g;
             getPix(x,y).setRouge(r);
             getPix(x,y).setVert(g);
@@ -187,7 +209,7 @@ void Image::ouvrir(const string & filename) {
     fichier.close();
     cout << "Lecture de l'image " << filename << " ... OK\n";
 }
-
+/*
 //
 void Image::afficherConsole(){
     cout << dimx << " " << dimy << endl;
