@@ -22,7 +22,7 @@ Image::~Image()
 }
 
 Image::Image (int dimensionX, int dimensionY)
-{	
+{
 	assert (dimensionX > 0 && dimensionY > 0);
     dimx = dimensionX;
     dimy = dimensionY;
@@ -66,7 +66,7 @@ void Image::dessinerRectangle (int Xmin, int Ymin, int Xmax, int Ymax, Pixel cou
 
 void Image::effacer(Pixel couleur)
 {
-    dessinerRectangle(0, 0, dimx, dimy, couleur);
+    dessinerRectangle(0, 0, dimx-1, dimy-1, couleur);
 
 	for (int x = 0; x <= dimx; x++)
     {
@@ -84,61 +84,76 @@ void Image::effacer(Pixel couleur)
 
 void Image::testRegression ()
 {
-    /*
-	Pixel pix;
-	//cout<<pix.getRouge()<<","<<pix.getVert()<<","<<pix.getBleu()<<"devrait etre 0,0,0"<<endl;
-	assert(pix.getRouge()==0);
-	assert(pix.getVert()==0);
-	assert(pix.getBleu()==0);
-	
-	Pixel pixm(11,22,33);
-	//cout<<pixm.getRouge()<<","<<pixm.getVert()<<","<<pixm.getBleu()<<"devrait etre 11,22,33"<<endl;
-	assert(pixm.getRouge()==11);
-	assert(pixm.getVert()==22);
-	assert(pixm.getBleu()==33);
-	
-	
-	pixm.setRouge(44);
-	pixm.setVert(55);
-	pixm.setBleu(66);
-	
-	//cout<<"est couleurs"<<pixm.getRouge()<<","<<pixm.getVert()<<","<<pixm.getBleu()<<"devrait etre 44,55,66"<<endl;
-	assert(pixm.getRouge()==44);
-	assert(pixm.getVert()==55);
-	assert(pixm.getBleu()==66);
-	
-	//image
-	//cout<<"initialisation :---------------------------------------"<<endl;
-	Image Image1(10,10);
-	Image Image2(100,100);
-	Image Image3(30,20);
-	Pixel pixcouleur(100,100,100);
-	Pixel pixcouleur_2(3,3,3);
-	
-	//cout<<"-------------------------------------------------------"<<endl;
-	//cout<<Image1.getPix(2,2).getBleu()<<" : (ima 1) bleu du pixel 2,2 initialement"<<endl;
-	assert(Image1.getPix(2,2).getBleu()==0);
-	assert(Image1.getPix(2,2).getVert()==0);
-	assert(Image1.getPix(2,2).getRouge()==0);
-	
-	//cout<<Image2.getPix(2,2).getBleu()<<" : (ima 2)bleu du pixel 2,2 initialement"<<endl;
-	
-	assert(Image2.getPix(2,2).getBleu()==0);
-	assert(Image3.getPix(2,2).getBleu()==0);
-	    
-	//cout<<"-----------tous les couleurs des pixels a 100--------------------"<<endl;
-	Image1.effacer(pixcouleur);
-	Image2.effacer(pixcouleur);
-	Image3.effacer(pixcouleur);
-	assert(Image1.getPix(2,2).getBleu()==100);
-	assert(Image2.getPix(2,2).getBleu()==100);
-	assert(Image3.getPix(2,2).getBleu()==100);
-	
-	
-	Image2.dessinerRectangle(1, 1, 10, 10, pixcouleur_2);
-	assert(Image2.getPix(3,3).getBleu()==3);
-	//assert(Image2.getPix(0,0).getBleu()==100);
-	*/
+    Pixel pix;
+
+    assert(pix.getRouge()==0);
+    assert(pix.getVert()==0);
+    assert(pix.getBleu()==0);
+
+    Pixel pixm(11,22,33);
+
+    assert(pixm.getRouge()==11);
+    assert(pixm.getVert()==22);
+    assert(pixm.getBleu()==33);
+
+    pixm.setRouge(44);
+    pixm.setVert(55);
+    pixm.setBleu(66);
+
+    assert(pixm.getRouge()==44);
+    assert(pixm.getVert()==55);
+    assert(pixm.getBleu()==66);
+
+    Image Image1(10,10);
+    Image Image2(100,100);
+    Image Image3(30,20);
+    Pixel pixcouleur(100,100,100);
+    Pixel pixcouleur_2(3,3,3);
+
+    assert(Image1.getPix(2,2).getBleu()==0);
+    assert(Image1.getPix(2,2).getVert()==0);
+    assert(Image1.getPix(2,2).getRouge()==0);
+
+
+    assert(Image2.getPix(2,2).getBleu()==0);
+    assert(Image3.getPix(2,2).getBleu()==0);
+
+    Image1.effacer(pixcouleur);
+    Image2.effacer(pixcouleur);
+    Image3.effacer(pixcouleur);
+    assert(Image1.getPix(2,2).getBleu()==100);
+    assert(Image2.getPix(2,2).getBleu()==100);
+    assert(Image3.getPix(2,2).getBleu()==100);
+
+
+    Image2.dessinerRectangle(1, 1, 10, 10, pixcouleur_2);
+    assert(Image2.getPix(3,3).getBleu()==3);
+
+
+    //assert(Image2.getPix(0,0).getBleu()==100);
+
+    Image im;
+    assert( im.dimx==0 );
+    assert( im.dimy==0 );
+    assert( im.tab==nullptr);
+
+    Image im2(64,128);
+    assert( im2.dimx==64 );
+    assert( im2.dimy==128 );
+    assert( im2.tab!=nullptr );
+
+    int i,j;
+
+    for(i=0; i<im2.dimx; i++)
+        for(j=0; j<im2.dimy; j++)
+        {
+            assert( im2.getPix(i,j).getRouge()==0 );          // car une image en sortie du constructeur doit être toute noire
+            assert( im2.getPix(i,j).getBleu()==0 );
+            assert( im2.getPix(i,j).getVert()==0 );
+        }
+
+    //faire assert de effacer
+
 }
 
 /*
