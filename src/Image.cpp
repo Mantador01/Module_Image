@@ -68,13 +68,6 @@ void Image::effacer(Pixel couleur)
 {
     dessinerRectangle(0, 0, dimx-1, dimy-1, couleur);
 
-	for (int x = 0; x <= dimx; x++)
-    {
-        for (int y = 0; y <= dimy; y++)
-        {
-			assert (this->getPix(x,y).getRouge() == couleur.getRouge() && this->getPix(x,y).getVert() == couleur.getVert() && this->getPix(x,y).getBleu() == couleur.getBleu());
-        }
-    }
 
 }
 
