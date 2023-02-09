@@ -3,6 +3,7 @@
 
 #include "Pixel.h"
 #include <string>
+
 class Image
 {
     public:
@@ -18,7 +19,7 @@ class Image
 
         // Accesseur : récupère le pixel original de coordonnées (x,y) en vérifiant leur validité
         // la formule pour passer d'un tab 2D à un tab 1D est tab[y*dimx+x]
-        Pixel& getPix (int x,int y);
+        Pixel& getPix (int x,int y) const;
 
         // Dessine un rectangle plein de la couleur dans l'image (en utilisant setPix, indices en paramètre compris)
         void dessinerRectangle (int Xmin,int Ymin,int Xmax,int Ymax, Pixel couleur);
@@ -32,19 +33,18 @@ class Image
         //
         void testRegression ();
 
-        /*
-        //
-        void sauver(const string & filename) const;
 
-        */
+        //
+        void sauver(const std::string & filename) const;
+
+
         void ouvrir(const std::string & filename);
 
-        /*/
         void afficherConsole();
 
         //
-        void afficher ();
-        */
+        //void afficher ();
+
 
     private:
         int dimx, dimy; //dimx, dimy : entier        // les dimensions de l'image

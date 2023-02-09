@@ -1,9 +1,7 @@
 #include "Image.h"
 #include "Pixel.h"
-
 #include <string>
 #include <fstream>
-
 #include <iostream>
 #include <cassert>
 
@@ -34,7 +32,7 @@ Image::Image (int dimensionX, int dimensionY)
 // Accesseur : récupère le pixel original de coordonnées (x,y) en vérifiant leur validité
 // la formule pour passer d'un tab 2D à un tab 1D est tab[y*dimx+x]
 
-Pixel& Image::getPix (int x, int y)
+Pixel& Image::getPix (int x, int y) const
 {
     int indice = y*dimx+x;
 	assert (dimx > 0);
@@ -69,7 +67,6 @@ void Image::dessinerRectangle (int Xmin, int Ymin, int Xmax, int Ymax, Pixel cou
 void Image::effacer(Pixel couleur)
 {
     dessinerRectangle(0, 0, dimx-1, dimy-1, couleur);
-
 
 }
 
@@ -116,7 +113,7 @@ void Image::testRegression ()
     for(i=0; i<im2.dimx; i++)
         for(j=0; j<im2.dimy; j++)
         {
-            assert( im2.getPix(i,j).getRouge()==0 );          // car une image en sortie du constructeur doit être toute noire
+            assert( im2.getPix(i,j).getRouge()==0 );    // car une image en sortie du constructeur doit être toute noire
             assert( im2.getPix(i,j).getBleu()==0 );
             assert( im2.getPix(i,j).getVert()==0 );
         }
@@ -172,22 +169,23 @@ void Image::testRegression ()
 
 
 }
-/*
-void Image::sauver(const string & filename) const {
+
+//
+void Image::sauver(const std::string & filename) const {
     ofstream fichier (filename.c_str());
     assert(fichier.is_open());
     fichier << "P3" << endl;
     fichier << dimx << " " << dimy << endl;
     fichier << "255" << endl;
-    for(unsigned int y=0; y<dimy; ++y)
-        for(unsigned int x=0; x<dimx; ++x) {
+    for(unsigned int y = 0; y < (unsigned int)dimy; ++y)
+        for(unsigned int x=0; x<(unsigned int)dimx; ++x) {
             Pixel& pix = getPix(x++,y);
-            fichier << +pix.r << " " << +pix.g << " " << +pix.b << " ";
+            fichier << +pix.getRouge() << " " << +pix.getVert() << " " << +pix.getBleu() << " ";
         }
-    cout << "Sauvegarde de l'image " << filename << " ... OK\n";
     fichier.close();
+    cout << "Sauvegarde de l'image " << filename << " ... OK\n";
 }
-*/
+
 //
 void Image::ouvrir(const std::string & filename) {
     ifstream fichier (filename.c_str());
@@ -199,22 +197,25 @@ void Image::ouvrir(const std::string & filename) {
 	assert(dimx > 0 && dimy > 0);
 	if (tab != NULL) delete [] tab;
 	tab = new Pixel [dimx*dimy];
-    for(unsigned int y=0; y<(unsigned int)dimy; y++)
+
+    for(unsigned int y=0; y<(unsigned int)dimy; y++){
         for(unsigned int x=0; x<(unsigned int)dimx; x++) {
+
             fichier >> r >> b >> g;
             getPix(x,y).setRouge(r);
             getPix(x,y).setVert(g);
             getPix(x,y).setBleu(b);
         }
+    }
     fichier.close();
     cout << "Lecture de l'image " << filename << " ... OK\n";
 }
-/*
+
 //
 void Image::afficherConsole(){
     cout << dimx << " " << dimy << endl;
-    for(unsigned int y=0; y<dimy; ++y) {
-        for(unsigned int x=0; x<dimx; ++x) {
+    for(unsigned int y=0; y<(unsigned int)dimy; ++y) {
+        for(unsigned int x=0; x<(unsigned int)dimx; ++x) {
             Pixel& pix = getPix(x,y);
             cout << +pix.getRouge() << " " << +pix.getVert() << " " << +pix.getBleu() << " ";
         }
@@ -222,9 +223,5 @@ void Image::afficherConsole(){
     }
 }
 
-//
-void Image::afficher (){
 
-}
-*/
 
