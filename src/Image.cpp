@@ -179,7 +179,7 @@ void Image::sauver(const std::string & filename) const {
     fichier << "255" << endl;
     for(unsigned int y = 0; y < (unsigned int)dimy; ++y)
         for(unsigned int x=0; x<(unsigned int)dimx; ++x) {
-            Pixel& pix = getPix(x++,y);
+            Pixel& pix = getPix(x,y);
             fichier << +pix.getRouge() << " " << +pix.getVert() << " " << +pix.getBleu() << " ";
         }
     fichier.close();
@@ -190,7 +190,7 @@ void Image::sauver(const std::string & filename) const {
 void Image::ouvrir(const std::string & filename) {
     ifstream fichier (filename.c_str());
     assert(fichier.is_open());
-	char r,g,b;
+	unsigned int r,g,b;
 	string mot;
 	dimx = dimy = 0;
 	fichier >> mot >> dimx >> dimy >> mot;
@@ -201,7 +201,7 @@ void Image::ouvrir(const std::string & filename) {
     for(unsigned int y=0; y<(unsigned int)dimy; y++){
         for(unsigned int x=0; x<(unsigned int)dimx; x++) {
 
-            fichier >> r >> b >> g;
+            fichier >> r >> g >> b;
             getPix(x,y).setRouge(r);
             getPix(x,y).setVert(g);
             getPix(x,y).setBleu(b);
