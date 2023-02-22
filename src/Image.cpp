@@ -180,7 +180,7 @@ void Image::sauver(const std::string & filename) const {
 void Image::ouvrir(const std::string & filename) {
     ifstream fichier (filename.c_str());
     assert(fichier.is_open());
-	char r,g,b;
+	unsigned int r,g,b;
 	string mot;
 	dimx = dimy = 0;
 	fichier >> mot >> dimx >> dimy >> mot;
