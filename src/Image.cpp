@@ -1,9 +1,15 @@
 #include "Image.h"
 #include "Pixel.h"
+
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <cassert>
+
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 using namespace std;
 
@@ -29,17 +35,12 @@ Image::Image (int dimensionX, int dimensionY)
     tab = new Pixel [dimy*dimx];
 }
 
-// Accesseur : récupère le pixel original de coordonnées (x,y) en vérifiant leur validité
-// la formule pour passer d'un tab 2D à un tab 1D est tab[y*dimx+x]
-
 Pixel& Image::getPix (int x, int y) const
 {
     int indice = y*dimx+x;
 	assert (dimx > 0);
     return tab[indice];
 }
-
-// Mutateur : modifie le pixel de coordonnées (x,y)
 
 void Image::setPix(int x, int y, const Pixel& couleur)
 {
@@ -70,10 +71,6 @@ void Image::effacer(Pixel couleur)
 
 }
 
-
-// Effectue une série de tests vérifiant que le module fonctionne et
-   // que les données membres de l'objet sont conformes
-
 void Image::testRegression ()
 {
 	Pixel pix;
@@ -96,8 +93,6 @@ void Image::testRegression ()
     assert(pixm.getVert()==55);
     assert(pixm.getBleu()==66);
 
-    //assert(Image2.getPix(0,0).getBleu()==100);
-
     Image im;
     assert( im.dimx==0 );
     assert( im.dimy==0 );
@@ -113,7 +108,7 @@ void Image::testRegression ()
     for(i=0; i<im2.dimx; i++)
         for(j=0; j<im2.dimy; j++)
         {
-            assert( im2.getPix(i,j).getRouge()==0 );    // car une image en sortie du constructeur doit être toute noire
+            assert( im2.getPix(i,j).getRouge()==0 );
             assert( im2.getPix(i,j).getBleu()==0 );
             assert( im2.getPix(i,j).getVert()==0 );
         }
@@ -126,13 +121,10 @@ void Image::testRegression ()
 	for(i=0; i<=30; i++)
         	for(j=0; j<=30; j++)
        		{
-		    assert( im2.getPix(i,j).getRouge()==pixcouleur.getRouge());    // car rectangle dessine dans image 0,0,30,30
+		    assert( im2.getPix(i,j).getRouge()==pixcouleur.getRouge());
 		    assert( im2.getPix(i,j).getBleu()==pixcouleur.getBleu());
 		    assert( im2.getPix(i,j).getVert()==pixcouleur.getVert());
 		}
-
-
-    //faire assert de effacer
 
 
    Pixel pixcouleur2(3,3,3);
@@ -141,7 +133,7 @@ void Image::testRegression ()
    	for(i=0; i<im2.dimx; i++)
 		for(j=0; j<im2.dimy; j++)
 		{
-			    assert( im2.getPix(i,j).getRouge()==pixcouleur2.getRouge());// car une image en sortie du constructeur doit être toute noire
+			    assert( im2.getPix(i,j).getRouge()==pixcouleur2.getRouge());
 			    assert( im2.getPix(i,j).getBleu()==pixcouleur2.getBleu());
 			    assert( im2.getPix(i,j).getVert()==pixcouleur2.getVert());
 			}
@@ -170,7 +162,6 @@ void Image::testRegression ()
 
 }
 
-//
 void Image::sauver(const std::string & filename) const {
     ofstream fichier (filename.c_str());
     assert(fichier.is_open());
@@ -179,14 +170,13 @@ void Image::sauver(const std::string & filename) const {
     fichier << "255" << endl;
     for(unsigned int y = 0; y < (unsigned int)dimy; ++y)
         for(unsigned int x=0; x<(unsigned int)dimx; ++x) {
-            Pixel& pix = getPix(x++,y);
+            Pixel& pix = getPix(x,y);
             fichier << +pix.getRouge() << " " << +pix.getVert() << " " << +pix.getBleu() << " ";
         }
     fichier.close();
     cout << "Sauvegarde de l'image " << filename << " ... OK\n";
 }
 
-//
 void Image::ouvrir(const std::string & filename) {
     ifstream fichier (filename.c_str());
     assert(fichier.is_open());
@@ -201,7 +191,7 @@ void Image::ouvrir(const std::string & filename) {
     for(unsigned int y=0; y<(unsigned int)dimy; y++){
         for(unsigned int x=0; x<(unsigned int)dimx; x++) {
 
-            fichier >> r >> b >> g;
+            fichier >> r >> g >> b;
             getPix(x,y).setRouge(r);
             getPix(x,y).setVert(g);
             getPix(x,y).setBleu(b);
@@ -211,7 +201,6 @@ void Image::ouvrir(const std::string & filename) {
     cout << "Lecture de l'image " << filename << " ... OK\n";
 }
 
-//
 void Image::afficherConsole(){
     cout << dimx << " " << dimy << endl;
     for(unsigned int y=0; y<(unsigned int)dimy; ++y) {
@@ -223,5 +212,182 @@ void Image::afficherConsole(){
     }
 }
 
+float temps () {
+    return float(SDL_GetTicks()) * 1000.f / CLOCKS_PER_SEC;
+}
 
+const int TAILLE_SPRITE = 32;
 
+SDL_Surface * m_surface;
+SDL_Texture * m_texture;
+bool m_hasChanged;
+        
+SDL_Window * m_window;
+SDL_Renderer * m_renderer;
+
+Image m_image;
+
+SDL_Texture * Image::getTexture() const {return m_texture;}
+
+void Image::setSurface(SDL_Surface * surf) {m_surface = surf;}
+
+void Image::draw (SDL_Renderer * m_renderer, int x, int y, int w, int h) {
+    int ok;
+    SDL_Rect r;
+    r.x = x;
+    r.y = y;
+    r.w = (w<0)?m_surface->w:w;
+    r.h = (h<0)?m_surface->h:h;
+
+    if (m_hasChanged) {
+        ok = SDL_UpdateTexture(m_texture,nullptr,m_surface->pixels,m_surface->pitch);
+        assert(ok == 0);
+        m_hasChanged = false;
+    }
+
+    ok = SDL_RenderCopy(m_renderer,m_texture,nullptr,&r);
+    assert(ok == 0);
+}
+
+void Image::loadFromFile (const char* filename, SDL_Renderer * m_renderer) {
+    m_surface = IMG_Load(filename);
+    if (m_surface == nullptr) {
+        string nfn = string("../") + filename;
+        cout << "Error: cannot load "<< filename <<". Trying "<<nfn<<endl;
+        m_surface = IMG_Load(nfn.c_str());
+        if (m_surface == nullptr) {
+            nfn = string("../") + nfn;
+            m_surface = IMG_Load(nfn.c_str());
+        }
+    }
+    if (m_surface == nullptr) {
+        cout<<"Error: cannot load "<< filename <<endl;
+        exit(1);
+    }
+
+    SDL_Surface * surfaceCorrectPixelFormat = SDL_ConvertSurfaceFormat(m_surface,SDL_PIXELFORMAT_ARGB8888,0);
+    SDL_FreeSurface(m_surface);
+    m_surface = surfaceCorrectPixelFormat;
+
+    m_texture = SDL_CreateTextureFromSurface(m_renderer,surfaceCorrectPixelFormat);
+    if (m_texture == nullptr) {
+        cout << "Error: problem to create the texture of "<< filename<< endl;
+        exit(1);
+    }
+}
+
+void Image::loadFromCurrentSurface (SDL_Renderer * m_renderer) {
+    m_texture = SDL_CreateTextureFromSurface(m_renderer,m_surface);
+    if (m_texture == nullptr) {
+        cout << "Error: problem to create the texture from surface " << endl;
+        exit(1);
+    }
+}
+
+void Image::sdlAff () 
+{
+
+    SDL_SetRenderDrawColor(m_renderer, 60, 60, 60, 255);
+    SDL_RenderClear(m_renderer);
+
+    if (Zoom<-1){
+        Zoom = -1;
+    }
+    float t=Zoom;
+
+    m_image.draw(m_renderer, 50-50*t, 50-50*t, 100+t*100, 100+t*100);
+
+}
+
+void Image::afficherInit()
+{
+    
+    m_surface=nullptr;
+	m_texture=nullptr;
+	m_hasChanged=false;
+	
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        cout << "Erreur lors de l'initialisation de la SDL : " << SDL_GetError() << endl;SDL_Quit();exit(1);
+    }
+
+    int imgFlags = IMG_INIT_PNG | IMG_INIT_JPG;
+    if( !(IMG_Init(imgFlags) & imgFlags)) {
+        cout << "SDL_m_image could not initialize! SDL_m_image Error: " << IMG_GetError() << endl;SDL_Quit();exit(1);
+    }
+
+	int dimx, dimy;
+
+	dimx = 200;
+	dimy = 200; 
+
+    m_window = SDL_CreateWindow("FENETRE", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, dimx, dimy, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+    if (m_window == NULL) {
+        cout << "Erreur lors de la creation de la fenetre : " << SDL_GetError() << endl; SDL_Quit(); exit(1);
+    }
+
+    m_renderer = SDL_CreateRenderer(m_window,-1,SDL_RENDERER_ACCELERATED);
+    
+    m_image.loadFromFile("./data/image_affiche.ppm",m_renderer);
+	
+	m_image.loadFromCurrentSurface(m_renderer); 
+}
+
+void Image::afficherBoucle () {
+    SDL_Event events;
+	bool quit = false;
+
+	while (!quit) {
+		while (SDL_PollEvent(&events)) {
+			if (events.type == SDL_QUIT) quit = true;
+			else if (events.type == SDL_KEYDOWN) 
+            { 
+				switch (events.key.keysym.scancode) 
+                {
+                    case SDL_SCANCODE_ESCAPE:
+                        quit = true;
+                        break;
+
+                    case SDL_SCANCODE_T:
+                        Zoom += 0.1;
+                        break;
+
+                    case SDL_SCANCODE_G:
+                        Zoom -= 0.1;
+                        break;
+                    default: break;
+
+                        
+				}
+			}
+		}
+
+		sdlAff();
+
+        SDL_RenderPresent(m_renderer);
+	}
+}
+
+void Image::afficherDetruit()
+{
+	SDL_FreeSurface(m_surface);
+    SDL_DestroyTexture(m_texture);
+
+    m_surface = nullptr;
+    m_texture = nullptr;
+    m_hasChanged = false;
+
+    TTF_Quit();
+    SDL_DestroyRenderer(m_renderer);
+    SDL_DestroyWindow(m_window);
+    SDL_Quit();
+
+}
+
+void Image::afficher (){
+
+	this->sauver("./data/image_affiche.ppm");
+	afficherInit();
+	afficherBoucle();
+	afficherDetruit();
+
+}

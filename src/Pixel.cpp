@@ -1,5 +1,5 @@
 #include "Pixel.h"
-//#include "Image.h"
+
 #include <iostream>
 #include <cassert>
 
