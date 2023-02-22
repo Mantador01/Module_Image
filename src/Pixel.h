@@ -1,38 +1,79 @@
-#ifndef PIXEL_H
-#define PIXEL_H
+    /**
+    @brief Description brève du fichier Pixel.h
+    Description détaillée du fichier Pixel.h
+    @author P2111020/P2018147/P2105542
+    @file Pixel.h
+    @version 1.0
+    @date 2023/02/22
+    */
 
+    #ifndef PIXEL_H
+    #define PIXEL_H
+    
+    /**
+    @brief Classe représentant un pixel en couleur RGB
+    */
+    class Pixel
 
-class Pixel
-{
+    {
     public:
-   // Constructeur par défaut de la classe: initialise le pixel à la couleur noire
-   Pixel ();
+    
+    /**
+    @brief Constructeur par défaut: Initialise les valeurs de r, g et b à 0
+    */
+    Pixel ();
 
-   // Constructeur de la classe: initialise r,g,b avec les paramètres
+    /**
+    @brief Constructeur avec paramètres: Initialise les valeurs de r, g et b avec les valeurs passées en paramètres
+    @param nr Valeur pour le canal rouge (0-255)
+    @param ng Valeur pour le canal vert (0-255)
+    @param nb Valeur pour le canal bleu (0-255)
+    */
     Pixel (int nr, int ng, int nb);
 
-   // Accesseur : récupère la composante rouge du pixel
-   int getRouge ()const;
+    /**
+    @brief Accesseur pour le canal rouge
+    @return Valeur du canal rouge (0-255)
+    */
+    int getRouge () const;
 
-   // Accesseur : récupère la composante verte du pixel
-   int getVert ()const;
-   
-   // Accesseur : récupère la composante bleue du pixel
-   int getBleu ()const;
+    /**
+    @brief Accesseur pour le canal vert
+    @return Valeur du canal vert (0-255)
+    */
+    int getVert () const;
 
- // Mutateur : modifie la composante rouge du pixel
-   void setRouge (int nr);
+    /**
+    @brief Accesseur pour le canal bleu
+    @return Valeur du canal bleu (0-255)
+    */
+    int getBleu () const;
 
-   // Mutateur : modifie la composante verte du pixel
-   void setVert (int ng);
+    /**
+    @brief Mutateur pour le canal rouge
+    @param nr Nouvelle valeur pour le canal rouge (0-255)
+    */
+    void setRouge (int nr);
 
-   // Mutateur : modifie la composante bleue du pixel
-   void setBleu (int nb);
+    /**
+    @brief Mutateur pour le canal vert
+    @param ng Nouvelle valeur pour le canal vert (0-255)
+    */
+    void setVert (int ng);
 
+    /**
+    @brief Mutateur pour le canal bleu
+    @param nb Nouvelle valeur pour le canal bleu (0-255)
+    */
+    void setBleu (int nb);
+
+    /**
+    @brief Destructeur de la classe Pixel
+    */
     ~Pixel();
-    
+
     private:
-        unsigned char r,g,b; //le type "unsigned char" pour stocker des entiers non signés dans l'intervalle [0, 255]
+        unsigned char r,g,b;
 
 };
 

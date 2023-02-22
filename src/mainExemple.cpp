@@ -34,12 +34,14 @@ int main(void)
 	Pixel rouge (120, 15, 10);
     Pixel vert (20, 202, 15);
     Pixel bleu (4, 58, 218);
+	Pixel blanc (250,250,250);
  
     Image image1 (64,48);
     image1.effacer(bleu);
     image1.dessinerRectangle(5, 20, 30, 40, rouge);
     image1.setPix(51,4,vert);
     image1.setPix(20,30,vert);
+	image1.effacer(blanc);
     image1.sauver("./data/image1.ppm");
  
     Image image2;
