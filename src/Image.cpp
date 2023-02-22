@@ -22,7 +22,11 @@ Image::Image()
 
 Image::~Image()
 {
-    delete [] tab; tab = NULL;
+    if (tab != NULL) {
+        delete [] tab;
+        tab = NULL;
+    }
+
     dimx=0;
     dimy=0;
 }
@@ -185,7 +189,10 @@ void Image::ouvrir(const std::string & filename) {
 	dimx = dimy = 0;
 	fichier >> mot >> dimx >> dimy >> mot;
 	assert(dimx > 0 && dimy > 0);
-	if (tab != NULL) delete [] tab;
+	if (tab != NULL){
+        delete [] tab;
+        tab = nullptr;
+    }
 	tab = new Pixel [dimx*dimy];
 
     for(unsigned int y=0; y<(unsigned int)dimy; y++){
@@ -215,8 +222,6 @@ void Image::afficherConsole(){
 float temps () {
     return float(SDL_GetTicks()) * 1000.f / CLOCKS_PER_SEC;
 }
-
-const int TAILLE_SPRITE = 32;
 
 SDL_Surface * m_surface;
 SDL_Texture * m_texture;

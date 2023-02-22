@@ -35,19 +35,19 @@
     @brief Accesseur pour le canal rouge
     @return Valeur du canal rouge (0-255)
     */
-    int getRouge () const;
+    unsigned char getRouge () const;
 
     /**
     @brief Accesseur pour le canal vert
     @return Valeur du canal vert (0-255)
     */
-    int getVert () const;
+    unsigned char getVert () const;
 
     /**
     @brief Accesseur pour le canal bleu
     @return Valeur du canal bleu (0-255)
     */
-    int getBleu () const;
+    unsigned char getBleu () const;
 
     /**
     @brief Mutateur pour le canal rouge

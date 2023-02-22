@@ -20,17 +20,17 @@ Pixel::Pixel (int nr, int ng, int nb)
 
 }
 
-int Pixel::getRouge ()const
+unsigned char Pixel::getRouge ()const
 {
     return r;
 }
 
-int Pixel::getVert()const
+unsigned char Pixel::getVert()const
 {
     return g;
 }
 
-int Pixel::getBleu()const
+unsigned char Pixel::getBleu()const
 {
     return b;
 }
