@@ -9,6 +9,7 @@ CC = g++
 SRC_DIR = ./src
 BIN_DIR = ./bin
 OBJ_DIR = ./obj
+DATA_DIR = ./data
 
 all: $(BIN_DIR)/exemple $(BIN_DIR)/test $(BIN_DIR)/affichage
 
@@ -37,4 +38,4 @@ $(OBJ_DIR)/Pixel.o: $(SRC_DIR)/Pixel.cpp $(SRC_DIR)/Pixel.h
 	$(CC) $(FLAGS) -c $(SRC_DIR)/Pixel.cpp -o $(OBJ_DIR)/Pixel.o $(SDL2)
 
 clean:
-	rm -f $(OBJS_EXEMPLE) $(OBJS_TEST) $(OBJS_AFFICHAGE) $(BIN_DIR)/exemple $(BIN_DIR)/test $(BIN_DIR)/affichage
+	rm -f $(OBJS_EXEMPLE) $(OBJS_TEST) $(OBJS_AFFICHAGE) $(BIN_DIR)/exemple $(BIN_DIR)/test $(BIN_DIR)/affichage $(DATA_DIR)/*
